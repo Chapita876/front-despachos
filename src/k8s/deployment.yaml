@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-despachos
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: front-despachos
+  template:
+    metadata:
+      labels:
+        app: front-despachos
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "false"
+    spec:
+      containers:
+        - name: front-despachos
+          image: christian98756/front-despachos:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-despachos-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: front-despachos
+  ports:
+    - port: 80
+      targetPort: 80
